@@ -222,7 +222,7 @@ extension CartScreenViewController {
         cartArray.forEach { cart in
             price += cart.nftPrice
         }
-        priceOfNFTS.text = "\(price) ETH"
+        priceOfNFTS.text = "\(String(format: "%.2f", price)) ETH"
     }
     
     func filterButtonTapped() {
