@@ -49,6 +49,8 @@ final class CartCell: UITableViewCell {
     let nftName: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 17, weight: .bold)
+        label.numberOfLines = 1
+        label.lineBreakMode = .byTruncatingTail
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -113,6 +115,7 @@ final class CartCell: UITableViewCell {
             
             nftName.leadingAnchor.constraint(equalTo: nftImage.trailingAnchor, constant: Constants.nameIndents.left),
             nftName.topAnchor.constraint(equalTo: topAnchor, constant: Constants.nameIndents.top),
+            nftName.widthAnchor.constraint(equalToConstant: contentView.frame.width / 2),
             
             starImage.widthAnchor.constraint(equalToConstant: Constants.starStackHeight),
             starImage.heightAnchor.constraint(equalToConstant: Constants.starStackHeight),
