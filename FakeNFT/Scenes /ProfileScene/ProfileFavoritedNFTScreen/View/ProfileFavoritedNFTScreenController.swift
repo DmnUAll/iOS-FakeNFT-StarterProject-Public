@@ -103,9 +103,9 @@ extension ProfileFavoritedNFTScreenController {
         viewModel.$canShowUI.bind { [weak self] newValue in
             guard let self else { return }
             if newValue {
-                if refreshControl.isRefreshing {
-                    refreshControl.endRefreshing()
-                    nftCollectionView.reloadData()
+                if self.refreshControl.isRefreshing {
+                    self.refreshControl.endRefreshing()
+                    self.nftCollectionView.reloadData()
                 } else {
                     self.showOrHideUI()
                 }
@@ -122,7 +122,7 @@ extension ProfileFavoritedNFTScreenController {
         viewModel.$shouldShowNetworkError.bind { [weak self] newValue in
             guard let self else { return }
             let errorHandler = ErrorHandler(delegate: self)
-            present(errorHandler.giveAlert(withMessage: newValue), animated: true)
+            self.present(errorHandler.giveAlert(withMessage: newValue), animated: true)
         }
     }
 

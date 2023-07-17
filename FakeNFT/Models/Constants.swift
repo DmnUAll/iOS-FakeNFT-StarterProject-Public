@@ -34,4 +34,5 @@ struct Constants {
     struct Links {
         static let defaultLink = "https:\\google.com"
     }
+    
 }
