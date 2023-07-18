@@ -15,10 +15,12 @@ protocol CartModelProtocol {
 
 final class CartModel: CartModelProtocol {
     
-    var urlString = "https://64858e8ba795d24810b71189.mockapi.io/api/v1/nft/"
+    enum Constants {
+        static let urlString = "https://64858e8ba795d24810b71189.mockapi.io/api/v1/nft/"
+    }
     
     func getNFT(nftID: String, completion: @escaping (CartStruct) -> Void) {
-        let requestString = urlString + nftID
+        let requestString = Constants.urlString + nftID
         guard let url = URL(string: requestString) else { return }
         var request = URLRequest(url: url)
         request.httpMethod = "GET"

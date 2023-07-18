@@ -72,8 +72,4 @@ final class PaymentCell: UICollectionViewCell {
         addSubview(shortName)
     }
     
-    func setBorder() {
-        print("SET")
-    }
-    
 }

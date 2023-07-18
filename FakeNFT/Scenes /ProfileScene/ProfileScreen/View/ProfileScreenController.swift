@@ -163,7 +163,6 @@ extension ProfileScreenController: ProfileEditingButtonDelegate {
 // MARK: - ProfileEditingScreenDelegate
 extension ProfileScreenController: ProfileEditingScreenDelegate {
     func updateUI() {
-        print(123)
         DispatchQueue.global().sync { [weak self] in
             guard let self else { return }
             self.viewModel?.checkForData()

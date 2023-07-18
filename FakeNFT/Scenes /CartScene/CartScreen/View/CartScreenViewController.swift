@@ -211,12 +211,12 @@ extension CartScreenViewController {
         }
     }
     
-    func fillPictureToDelete(urlStr: String) {
+    private func fillPictureToDelete(urlStr: String) {
         let url = URL(string: urlStr)
         imageToDelete.kf.setImage(with: url)
     }
     
-    func fillInfo() {
+    private func fillInfo() {
         countOfNFTS.text = "\(cartArray.count) NFT"
         var price = 0.0
         cartArray.forEach { cart in
@@ -229,7 +229,7 @@ extension CartScreenViewController {
         showMenu()
     }
     
-    func showMenu() {
+    private func showMenu() {
         let alertController = UIAlertController(title: "Сортировка", message: nil, preferredStyle: .actionSheet)
         let sortByPriceAction = UIAlertAction(title: "По цене", style: .default) { _ in
             self.sortByPrice()
@@ -248,17 +248,17 @@ extension CartScreenViewController {
         present(alertController, animated: true, completion: nil)
     }
     
-    func sortByPrice() {
+    private func sortByPrice() {
         cartArray = cartArray.sorted(by: { $0.nftPrice > $1.nftPrice })
         cartTable.reloadData()
     }
 
-    func sortByRating() {
+    private func sortByRating() {
         cartArray = cartArray.sorted(by: { $0.nftRating > $1.nftRating })
         cartTable.reloadData()
     }
 
-    func sortByName() {
+    private func sortByName() {
         cartArray = cartArray.sorted(by: { $0.nftName < $1.nftName })
         cartTable.reloadData()
     }
