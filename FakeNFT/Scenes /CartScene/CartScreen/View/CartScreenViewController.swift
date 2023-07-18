@@ -286,7 +286,6 @@ extension CartScreenViewController {
     
     @objc
     func showPaymentScreen() {
-        print("Open payment screen")
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         let paymentViewModel = PaymentViewModel()
         let paymentModel = PaymentModel()

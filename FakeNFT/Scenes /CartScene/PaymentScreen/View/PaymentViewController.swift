@@ -65,6 +65,7 @@ final class PaymentViewController: UIViewController {
         label.textColor = .link
         label.textAlignment = .left
         label.text = "Пользовательского соглашения"
+        label.isUserInteractionEnabled = true
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -130,15 +131,35 @@ extension PaymentViewController {
         view.addSubview(userAgreementLink)
         paymentCollection.dataSource = self
         paymentCollection.delegate = self
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(labelTapped))
+        userAgreementLink.addGestureRecognizer(tapGesture)
     }
     
     @objc
     func payButtonTapped() {
         if isCellSelected {
-            let successVC = SuccessViewController()
-            successVC.modalPresentationStyle = .fullScreen
-            successVC.modalTransitionStyle = .crossDissolve
-            present(successVC, animated: false)
+            let randomNum = Int.random(in: 1...3)
+            if randomNum == 1 {
+                let successVC = UnsuccessViewController()
+                successVC.modalPresentationStyle = .fullScreen
+                successVC.modalTransitionStyle = .crossDissolve
+                present(successVC, animated: false)
+            } else {
+                let successVC = SuccessViewController()
+                successVC.modalPresentationStyle = .fullScreen
+                successVC.modalTransitionStyle = .crossDissolve
+                present(successVC, animated: false)
+            }
+        }
+    }
+    
+    @objc
+    func labelTapped() {
+        guard let url = URL(string: "https://yandex.ru/legal/practicum_termsofuse/") else {
+            return
+        }
+        if UIApplication.shared.canOpenURL(url) {
+            UIApplication.shared.open(url)
         }
     }
     
