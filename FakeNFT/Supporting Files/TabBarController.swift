@@ -40,7 +40,6 @@ extension TabBarController {
 
         tabBar.backgroundColor = .appWhite
 
-        let catalogNavigationController = NavigationController(rootViewController: secondMockViewController)
         let profileNavigationController = NavigationController(rootViewController: firstMockViewController)
         let catalogNavigationController = NFTListFactory.create()
         let basketNavigationController = NavigationController(rootViewController: thirdMockViewController)
