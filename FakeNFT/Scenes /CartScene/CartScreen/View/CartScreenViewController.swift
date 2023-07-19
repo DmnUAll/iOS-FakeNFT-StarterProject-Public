@@ -62,7 +62,7 @@ final class CartScreenViewController: UIViewController {
         label.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         label.numberOfLines = 0
         label.textAlignment = .center
-        label.text = "Вы уверены, что хотите удалить объект из корзины?"
+        label.text = "DELETE_FROM_BASKET".localized
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -72,7 +72,7 @@ final class CartScreenViewController: UIViewController {
         button.backgroundColor = .black
         button.layer.cornerRadius = 12
         button.layer.masksToBounds = true
-        button.setTitle("Удалить", for: .normal)
+        button.setTitle("DELETE".localized, for: .normal)
         button.setTitleColor(.red, for: .normal)
         button.addTarget(nil, action: #selector(deleteNFT), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -85,7 +85,7 @@ final class CartScreenViewController: UIViewController {
         button.layer.cornerRadius = 12
         button.layer.masksToBounds = true
         button.addTarget(nil, action: #selector(cancel), for: .touchUpInside)
-        button.setTitle("Вернуться", for: .normal)
+        button.setTitle("RETURN".localized, for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -96,7 +96,7 @@ final class CartScreenViewController: UIViewController {
         button.layer.cornerRadius = 12
         button.layer.masksToBounds = true
         button.addTarget(nil, action: #selector(showPaymentScreen), for: .touchUpInside)
-        button.setTitle("К оплате", for: .normal)
+        button.setTitle("PAYABLE_TO".localized, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .bold)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -230,20 +230,20 @@ extension CartScreenViewController {
     }
     
     private func showMenu() {
-        let alertController = UIAlertController(title: "Сортировка", message: nil, preferredStyle: .actionSheet)
-        let sortByPriceAction = UIAlertAction(title: "По цене", style: .default) { _ in
+        let alertController = UIAlertController(title: "SORTING".localized, message: nil, preferredStyle: .actionSheet)
+        let sortByPriceAction = UIAlertAction(title: "BY_PRICE".localized, style: .default) { _ in
             self.sortByPrice()
         }
         alertController.addAction(sortByPriceAction)
-        let sortByRatingAction = UIAlertAction(title: "По рейтингу", style: .default) { _ in
+        let sortByRatingAction = UIAlertAction(title: "BY_RATING".localized, style: .default) { _ in
             self.sortByRating()
         }
         alertController.addAction(sortByRatingAction)
-        let sortByNameAction = UIAlertAction(title: "По названию", style: .default) { _ in
+        let sortByNameAction = UIAlertAction(title: "BY_NAME".localized, style: .default) { _ in
             self.sortByName()
         }
         alertController.addAction(sortByNameAction)
-        let cancelAction = UIAlertAction(title: "Отмена", style: .cancel, handler: nil)
+        let cancelAction = UIAlertAction(title: "CANCEL".localized, style: .cancel, handler: nil)
         alertController.addAction(cancelAction)
         present(alertController, animated: true, completion: nil)
     }

@@ -33,7 +33,7 @@ final class PaymentViewController: UIViewController {
         button.layer.cornerRadius = 12
         button.layer.masksToBounds = true
         button.addTarget(nil, action: #selector(payButtonTapped), for: .touchUpInside)
-        button.setTitle("Оплатить", for: .normal)
+        button.setTitle("PAY".localized, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .bold)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -53,7 +53,7 @@ final class PaymentViewController: UIViewController {
         label.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         label.numberOfLines = 0
         label.textAlignment = .left
-        label.text = "Совершая покупку, вы соглашаетесь с условиями"
+        label.text = "AGREE_TO_THE_TERMS".localized
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -64,7 +64,7 @@ final class PaymentViewController: UIViewController {
         label.numberOfLines = 0
         label.textColor = .link
         label.textAlignment = .left
-        label.text = "Пользовательского соглашения"
+        label.text = "USER_AGREEMENT".localized
         label.isUserInteractionEnabled = true
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -122,7 +122,7 @@ extension PaymentViewController {
             }
         })
         tabBarController?.tabBar.isHidden = true
-        title = "Выберите способ оплаты"
+        title = "CHOOSE_PAYMENT".localized
         view.backgroundColor = .white
         view.addSubview(paymentCollection)
         view.addSubview(cartInfo)

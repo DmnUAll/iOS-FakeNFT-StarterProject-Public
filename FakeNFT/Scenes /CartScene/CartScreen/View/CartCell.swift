@@ -57,7 +57,7 @@ final class CartCell: UITableViewCell {
     
     let nftPriceTitle: UILabel = {
         let label = UILabel()
-        label.text = "Цена"
+        label.text = "PRICE".localized
         label.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label

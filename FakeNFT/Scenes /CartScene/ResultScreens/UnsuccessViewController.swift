@@ -23,7 +23,7 @@ final class UnsuccessViewController: UIViewController {
         label.font = UIFont.systemFont(ofSize: 22, weight: .regular)
         label.numberOfLines = 0
         label.textAlignment = .center
-        label.text = "Упс! Что-то пошло не так :( \nПопробуйте ещё раз!"
+        label.text = "UNSUCCESSFUL_PAYMENT".localized
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -34,7 +34,7 @@ final class UnsuccessViewController: UIViewController {
         button.layer.cornerRadius = 12
         button.layer.masksToBounds = true
         button.addTarget(nil, action: #selector(backTapped), for: .touchUpInside)
-        button.setTitle("Вернуться в каталог", for: .normal)
+        button.setTitle("BACK_TO_CATALOG".localized, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: .bold)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
