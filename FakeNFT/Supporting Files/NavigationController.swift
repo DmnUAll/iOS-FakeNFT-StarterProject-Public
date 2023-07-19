@@ -51,6 +51,9 @@ extension NavigationController {
     }
 
     @objc private func sortTapped() {
+        if let cartVC = viewControllers.first as? CartScreenViewController {
+            cartVC.filterButtonTapped()
+        }
         sortingButtonDelegate?.sortTapped()
     }
 
@@ -70,7 +73,7 @@ extension NavigationController {
         } else {
             navigationBar.topItem?.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: Constants.IconNames.sort),
                                                                         style: .done,
-                                                                        target: nil,
+                                                                        target: self,
                                                                         action: #selector(sortTapped))
         }
     }
