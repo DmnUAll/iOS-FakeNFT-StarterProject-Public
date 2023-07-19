@@ -51,8 +51,9 @@ extension NavigationController {
     }
 
     @objc private func sortTapped() {
-        guard let cartVC = viewControllers.first as? CartScreenViewController else { return }
-        cartVC.filterButtonTapped()
+        if let cartVC = viewControllers.first as? CartScreenViewController {
+            cartVC.filterButtonTapped()
+        }
         sortingButtonDelegate?.sortTapped()
     }
 
