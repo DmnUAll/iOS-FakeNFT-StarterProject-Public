@@ -11,7 +11,8 @@ import UIKit
 final class ProfileMenuCell: UITableViewCell {
 
     // MARK: - Properties and Initializers
-    let menuCategoryLabel = UICreator.shared.makeLabel(font: UIFont.appFont(.bold, withSize: 17))
+    static let reuseIdentifier = "ProfileMenuCell"
+    let menuCategoryLabel = UICreator.makeLabel(font: UIFont.appFont(.bold, withSize: 17))
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -38,10 +39,18 @@ extension ProfileMenuCell {
 
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            menuCategoryLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            menuCategoryLabel.topAnchor.constraint(equalTo: topAnchor, constant: 16),
-            menuCategoryLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            menuCategoryLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16)
+            menuCategoryLabel.leadingAnchor.constraint(equalTo: leadingAnchor,
+                                                       constant: LocalConstants.defaultSpacing),
+            menuCategoryLabel.topAnchor.constraint(equalTo: topAnchor, constant: LocalConstants.defaultSpacing),
+            menuCategoryLabel.trailingAnchor.constraint(equalTo: trailingAnchor,
+                                                        constant: -LocalConstants.defaultSpacing),
+            menuCategoryLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -LocalConstants.defaultSpacing)
         ])
     }
+}
+
+// MARK: - ProfileMenuCell LocalConstants
+private enum LocalConstants {
+
+    static let defaultSpacing: CGFloat = 16
 }

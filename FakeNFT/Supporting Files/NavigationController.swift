@@ -12,6 +12,11 @@ protocol ProfileEditingButtonDelegate: AnyObject {
     func proceedToEditing()
 }
 
+// MARK: - NavigationControllerSortingButtonDelegate protocol {
+protocol NavigationControllerSortingButtonDelgate: AnyObject {
+    func sortTapped()
+}
+
 // MARK: - NavigationController
 final class NavigationController: UINavigationController {
 
@@ -21,6 +26,7 @@ final class NavigationController: UINavigationController {
     }
 
     var profileEditingButtonDelegate: ProfileEditingButtonDelegate?
+    var sortingButtonDelegate: NavigationControllerSortingButtonDelgate?
 
     override init(rootViewController: UIViewController) {
         super.init(rootViewController: rootViewController)
@@ -47,11 +53,11 @@ extension NavigationController {
     @objc private func sortTapped() {
         guard let cartVC = viewControllers.first as? CartScreenViewController else { return }
         cartVC.filterButtonTapped()
+        sortingButtonDelegate?.sortTapped()
     }
 
     private func configureNavigationController(forVC viewController: UIViewController) {
         navigationBar.tintColor = .appBlack
-        navigationBar.backgroundColor = .appWhite
         navigationBar.titleTextAttributes = [
             .font: UIFont.appFont(.bold, withSize: 17),
             .foregroundColor: UIColor.appBlack

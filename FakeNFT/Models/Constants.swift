@@ -16,6 +16,14 @@ struct Constants {
         static let statistics = "StatisticsIcon"
         static let sort = "SortingIcon"
         static let edit = "EditingIcon"
+        static let inactiveLike = "InactiveLike"
+        static let activeLike = "ActiveLike"
+        static let inactiveRating = "RatingInactive"
+        static let activeRating = "RatingActive"
+        static let arrowClockwise = "arrow.clockwise"
+        static let chevronRight = "chevron.right"
+        static let chevronLeft = "chevron.left"
+        static let xmark = "xmark"
     }
 
     struct ImageNames {
@@ -23,7 +31,8 @@ struct Constants {
         static let placeholder = "ProfilePlaceholder"
     }
 
-    struct CollectionElementNames {
-        static let profileMenuCell = "ProfileMenuCell"
+    struct Links {
+        static let defaultLink = "https:\\google.com"
     }
+    
 }

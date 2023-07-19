@@ -16,6 +16,11 @@ protocol NetworkClient {
     func send<T: Decodable>(request: NetworkRequest,
                             type: T.Type,
                             onResponse: @escaping (Result<T, Error>) -> Void) -> NetworkTask?
+    @discardableResult
+    func upload<T: Decodable>(request: NetworkRequest,
+                              type: T.Type,
+                              params: [String: Any],
+                              onResponse: @escaping (Result<T, Error>) -> Void) -> NetworkTask?
 }
 
 struct DefaultNetworkClient: NetworkClient {
@@ -48,6 +53,46 @@ struct DefaultNetworkClient: NetworkClient {
 
             if let data = data {
                 onResponse(.success(data))
+                return
+            } else if let error = error {
+                onResponse(.failure(NetworkClientError.urlRequestError(error)))
+                return
+            } else {
+                assertionFailure("Unexpected condition!")
+                return
+            }
+        }
+
+        task.resume()
+
+        return DefaultNetworkTask(dataTask: task)
+    }
+
+    @discardableResult
+    func upload<T: Decodable>(request: NetworkRequest,
+                              type: T.Type,
+                              params: [String: Any],
+                              onResponse: @escaping (Result<T, Error>) -> Void) -> NetworkTask? {
+
+        guard let urlRequest = create(request: request) else { return nil }
+
+        guard let data = try? JSONSerialization.data(withJSONObject: params, options: .prettyPrinted) else {
+            return nil
+        }
+
+        let task = session.uploadTask(with: urlRequest, from: data) { data, response, error in
+            guard let response = response as? HTTPURLResponse else {
+                onResponse(.failure(NetworkClientError.urlSessionError))
+                return
+            }
+
+            guard 200 ..< 300 ~= response.statusCode else {
+                onResponse(.failure(NetworkClientError.httpStatusCode(response.statusCode)))
+                return
+            }
+
+            if let data = data {
+                self.parse(data: data, type: type, onResponse: onResponse)
                 return
             } else if let error = error {
                 onResponse(.failure(NetworkClientError.urlRequestError(error)))

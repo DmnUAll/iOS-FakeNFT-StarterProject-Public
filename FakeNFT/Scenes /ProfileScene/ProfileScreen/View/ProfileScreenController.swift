@@ -14,44 +14,69 @@ final class ProfileScreenController: UIViewController {
     private var viewModel: ProfileScreenViewModel?
 
     private let noInternetLabel = {
-       let label = UICreator.shared.makeLabel(text: "Нет интернета", font: UIFont.appFont(.bold, withSize: 17))
+        let label = UICreator.makeLabel(text: "NO_INTERNET_ERROR".localized,
+                                        font: UIFont.appFont(.bold, withSize: 17))
         label.isHidden = true
         return label
     }()
-    private let activityIndicator = UICreator.shared.makeActivityIndicator()
-    private let profileImageView = UICreator.shared.makeImageView(cornerRadius: 35)
-    private let profileNameLabel = UICreator.shared.makeLabel()
-    private let profileDescriptionLabel = UICreator.shared.makeLabel(font: UIFont.appFont(.regular, withSize: 13))
-    private let profileLinkTextView = UICreator.shared.makeTextView(haveLinks: true, backgroundColor: .clear)
+    private let retryButton = {
+        let button = UICreator.makeButton(withTitle: "RETRY".localized,
+                                          fontColor: UIColor.appWhite,
+                                          backgroundColor: UIColor.appBlack,
+                                          action: #selector(retryConnection))
+        button.isHidden = true
+        return button
+    }()
+    private let activityIndicator = UICreator.makeActivityIndicator()
+    private let profileImageView = UICreator.makeImageView(cornerRadius: 35)
+    private let profileNameLabel = UICreator.makeLabel()
+    private let profileDescriptionLabel = UICreator.makeLabel(font: UIFont.appFont(.regular, withSize: 13))
+    private let profileLinkTextView = UICreator.makeTextView(haveLinks: true, backgroundColor: .clear)
     private let profileMenuTableView = {
-        let tableView = UICreator.shared.makeTableView(isScrollable: false)
+        let tableView = UICreator.makeTableView(isScrollable: false)
         tableView.register(ProfileMenuCell.self,
-                           forCellReuseIdentifier: Constants.CollectionElementNames.profileMenuCell)
+                           forCellReuseIdentifier: ProfileMenuCell.reuseIdentifier)
         tableView.showsVerticalScrollIndicator = false
         return tableView
     }()
 
     // MARK: - Life Cycle
     override func viewDidLoad() {
+        super.viewDidLoad()
         view.backgroundColor = .appWhite
         setupAutolayout()
         addSubviews()
         setupConstraints()
         (navigationController as? NavigationController)?.profileEditingButtonDelegate = self
+        navigationItem.backButtonTitle = ""
         profileMenuTableView.dataSource = self
         profileMenuTableView.delegate = self
+        profileLinkTextView.delegate = self
         showOrHideUI()
         viewModel = ProfileScreenViewModel()
         bind()
-        viewModel?.checkForData()
+        checkForNetworkConnection()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tabBarController?.tabBar.isHidden = false
     }
 }
 
 // MARK: - Helpers
 extension ProfileScreenController {
 
+    @objc private func retryConnection() {
+        activityIndicator.startAnimating()
+        noInternetLabel.isHidden = true
+        retryButton.isHidden = true
+        checkForNetworkConnection()
+    }
+
     private func setupAutolayout() {
         noInternetLabel.toAutolayout()
+        retryButton.toAutolayout()
         activityIndicator.toAutolayout()
         profileImageView.toAutolayout()
         profileNameLabel.toAutolayout()
@@ -62,6 +87,7 @@ extension ProfileScreenController {
 
     private func addSubviews() {
         view.addSubview(noInternetLabel)
+        view.addSubview(retryButton)
         view.addSubview(activityIndicator)
         view.addSubview(profileImageView)
         view.addSubview(profileNameLabel)
@@ -74,24 +100,41 @@ extension ProfileScreenController {
         NSLayoutConstraint.activate([
             noInternetLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             noInternetLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            retryButton.leadingAnchor.constraint(equalTo: view.leadingAnchor,
+                                                 constant: LocalConstants.defaultSpacing),
+            retryButton.topAnchor.constraint(equalTo: noInternetLabel.bottomAnchor,
+                                             constant: LocalConstants.defaultSpacing),
+            retryButton.trailingAnchor.constraint(equalTo: view.trailingAnchor,
+                                                  constant: -LocalConstants.defaultSpacing),
             activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            profileImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            profileImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
-            profileImageView.widthAnchor.constraint(equalToConstant: 70),
+            profileImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor,
+                                                      constant: LocalConstants.defaultSpacing),
+            profileImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor,
+                                                  constant: LocalConstants.defaultTopSpacing),
+            profileImageView.widthAnchor.constraint(equalToConstant: LocalConstants.profileImageSize),
             profileImageView.heightAnchor.constraint(equalTo: profileImageView.widthAnchor),
-            profileNameLabel.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 16),
-            profileNameLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            profileNameLabel.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor,
+                                                      constant: LocalConstants.defaultSpacing),
+            profileNameLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor,
+                                                       constant: -LocalConstants.defaultSpacing),
             profileNameLabel.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor),
-            profileDescriptionLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            profileDescriptionLabel.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: 20),
-            profileDescriptionLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -18),
-            profileLinkTextView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            profileLinkTextView.topAnchor.constraint(equalTo: profileDescriptionLabel.bottomAnchor, constant: 12),
-            profileLinkTextView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -18),
-            profileLinkTextView.heightAnchor.constraint(equalToConstant: 20),
+            profileDescriptionLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor,
+                                                             constant: LocalConstants.defaultSpacing),
+            profileDescriptionLabel.topAnchor.constraint(equalTo: profileImageView.bottomAnchor,
+                                                         constant: LocalConstants.defaultTopSpacing),
+            profileDescriptionLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor,
+                                                              constant: -LocalConstants.defaultTrailingSpacing),
+            profileLinkTextView.leadingAnchor.constraint(equalTo: view.leadingAnchor,
+                                                         constant: LocalConstants.defaultSpacing),
+            profileLinkTextView.topAnchor.constraint(equalTo: profileDescriptionLabel.bottomAnchor,
+                                                     constant: LocalConstants.profileLinkTopSpacing),
+            profileLinkTextView.trailingAnchor.constraint(equalTo: view.trailingAnchor,
+                                                          constant: -LocalConstants.defaultTrailingSpacing),
+            profileLinkTextView.heightAnchor.constraint(equalToConstant: LocalConstants.profileLinkHeight),
             profileMenuTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            profileMenuTableView.topAnchor.constraint(equalTo: profileLinkTextView.bottomAnchor, constant: 44),
+            profileMenuTableView.topAnchor.constraint(equalTo: profileLinkTextView.bottomAnchor,
+                                                      constant: LocalConstants.profileMenuTopSpacing),
             profileMenuTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             profileMenuTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
@@ -106,6 +149,20 @@ extension ProfileScreenController {
                 self.showOrHideUI()
             }
         }
+    }
+
+    private func checkForNetworkConnection() {
+        if InternetConnectionManager.isConnectedToNetwork() {
+            viewModel?.checkForData()
+        } else {
+            showNoInternetMessage()
+        }
+    }
+
+    private func showNoInternetMessage() {
+        activityIndicator.stopAnimating()
+        noInternetLabel.isHidden = false
+        retryButton.isHidden = false
     }
 
     private func showOrHideUI() {
@@ -123,7 +180,7 @@ extension ProfileScreenController {
 
     private func fillUI() {
         guard let viewModel else { return }
-        let profile = viewModel.giveData()
+        let profile = viewModel.profile
         profileImageView.loadImage(urlString: profile?.avatar)
         profileNameLabel.text = profile?.name
         profileDescriptionLabel.text = profile?.description
@@ -149,19 +206,36 @@ extension ProfileScreenController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        switch indexPath.row {
+        case 0:
+            navigationController?.pushViewController(
+                ProfileNFTScreenController(viewModel: ProfileNFTScreenViewModel(profile: viewModel?.profile),
+                                           delegate: self), animated: true)
+        case 1:
+            navigationController?.pushViewController(
+                ProfileFavoritedNFTScreenController(
+                    viewModel: ProfileFavoritedNFTScreenViewModel(profile: viewModel?.profile),
+                    delegate: self), animated: true)
+        case 2:
+            guard let viewModel else { return }
+            navigationController?.pushViewController(viewModel.configureWebView(), animated: true)
+        default:
+            return
+        }
     }
 }
 
 // MARK: - ProfileEditingButtonDelegate
 extension ProfileScreenController: ProfileEditingButtonDelegate {
     func proceedToEditing() {
-        guard let profile = viewModel?.giveData() else { return }
-        present(ProfileEditingScreenController(forProfile: profile, delegate: self), animated: true)
+        guard let profile = viewModel?.profile else { return }
+        present(ProfileEditingScreenController(viewModel: ProfileEditingScreenViewModel(profileToEdit: profile),
+                                               delegate: self), animated: true)
     }
 }
 
 // MARK: - ProfileEditingScreenDelegate
-extension ProfileScreenController: ProfileEditingScreenDelegate {
+extension ProfileScreenController: ProfileUIUpdateDelegate {
     func updateUI() {
         DispatchQueue.global().sync { [weak self] in
             guard let self else { return }
@@ -170,4 +244,30 @@ extension ProfileScreenController: ProfileEditingScreenDelegate {
             self.showOrHideUI()
         }
     }
+}
+
+// MARK: - UITextViewDelegate
+extension ProfileScreenController: UITextViewDelegate {
+
+    func textView(_ textView: UITextView,
+                  shouldInteractWith URL: URL,
+                  in characterRange: NSRange,
+                  interaction: UITextItemInteraction
+    ) -> Bool {
+        guard let viewModel else { return true }
+        navigationController?.pushViewController(viewModel.configureWebView(), animated: true)
+        return false
+    }
+}
+
+// MARK: - ProfileScreenController LocalConstants
+private enum LocalConstants {
+
+    static let defaultSpacing: CGFloat = 16
+    static let defaultTopSpacing: CGFloat = 20
+    static let defaultTrailingSpacing: CGFloat = 18
+    static let profileImageSize: CGFloat = 70
+    static let profileLinkTopSpacing: CGFloat = 12
+    static let profileLinkHeight: CGFloat = 20
+    static let profileMenuTopSpacing: CGFloat = 44
 }

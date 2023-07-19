@@ -41,21 +41,23 @@ extension TabBarController {
         tabBar.backgroundColor = .appWhite
 
         let catalogNavigationController = NavigationController(rootViewController: secondMockViewController)
+        let profileNavigationController = NavigationController(rootViewController: firstMockViewController)
+        let catalogNavigationController = NFTListFactory.create()
         let basketNavigationController = NavigationController(rootViewController: thirdMockViewController)
         let statisticsNavigationController = NavigationController(rootViewController: fourthMockViewController)
 
         self.viewControllers = [
             configureTab(withController: NavigationController(rootViewController: ProfileScreenController()),
-                         title: "Профиль",
+                         title: "PROFILE".localized,
                          andImage: UIImage(named: Constants.IconNames.profile) ?? UIImage()),
             configureTab(withController: catalogNavigationController,
-                         title: "Каталог",
+                         title: "CATALOG".localized,
                          andImage: UIImage(named: Constants.IconNames.catalog) ?? UIImage()),
             configureTab(withController: basketNavigationController,
-                         title: "Корзина",
+                         title: "BASKET".localized,
                          andImage: UIImage(named: Constants.IconNames.basket) ?? UIImage()),
             configureTab(withController: statisticsNavigationController,
-                         title: "Статистика",
+                         title: "STATISTICS".localized,
                          andImage: UIImage(named: Constants.IconNames.statistics) ?? UIImage())
         ]
     }
