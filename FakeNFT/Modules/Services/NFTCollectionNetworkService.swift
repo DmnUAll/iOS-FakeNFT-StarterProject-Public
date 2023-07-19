@@ -13,3 +13,4 @@ protocol NFTNetworkService {
     func getLikedNFT(result: @escaping (Result<ProfileModel, Error>) -> Void)
     func putLikedNft(params: [String: Any], result: @escaping (Result<ProfileModel, Error>) -> Void)
 }
+

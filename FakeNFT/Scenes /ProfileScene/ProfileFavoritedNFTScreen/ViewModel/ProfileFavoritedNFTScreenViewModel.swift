@@ -50,9 +50,9 @@ extension ProfileFavoritedNFTScreenViewModel {
                 do {
                     let unwrappedNFT = try nft.get()
                     self.nftList.append(unwrappedNFT)
-                    dispatchGroup.leave()
+                    self.dispatchGroup.leave()
                 } catch let error {
-                    shouldShowNetworkError = "\(error)"
+                    self.shouldShowNetworkError = "\(error)"
                 }
             }
         }

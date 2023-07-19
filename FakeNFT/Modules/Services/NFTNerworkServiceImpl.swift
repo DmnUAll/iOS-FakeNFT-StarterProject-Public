@@ -31,5 +31,3 @@ final class NFTNetworkServiceImpl: NFTNetworkService {
                              onResponse: result)
     }
 }
-
-

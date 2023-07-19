@@ -70,7 +70,7 @@ extension ProfileNFTScreenViewModel {
                     self.nftList.append(unwrappedNFT)
                     self.checkForAuthorData(withAuthorID: "\(unwrappedNFT.author)")
                 } catch let error {
-                    shouldShowNetworkError = "\(error)"
+                    self.shouldShowNetworkError = "\(error)"
                 }
             }
         }
