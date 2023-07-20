@@ -14,4 +14,5 @@ struct NFTDetails {
     let sectionDescription: String
     let items: [NFTIndividualModel]
     let profile: ProfileModel
+    let selectedNfts: [String]
 }

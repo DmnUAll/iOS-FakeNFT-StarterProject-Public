@@ -29,13 +29,14 @@ final class NFTListViewModelImpl: NFTListViewModel {
     private let nftNetworkService: NFTNetworkService
     private var nftIndividualItems: [NFTIndividualModel] = []
     private var profile: ProfileModel?
+    private var selectedNfts: [String]?
 
     init(nftNetworkService: NFTNetworkService) {
         self.nftNetworkService = nftNetworkService
     }
 
     func cellSelected(_ index: IndexPath) {
-        guard let profile else { return }
+        guard let profile, let selectedNfts else { return }
         if case let .loaded(nftCollectionItems) = state.value {
             let selectedCollection = nftCollectionItems[index.row]
 
@@ -46,7 +47,8 @@ final class NFTListViewModelImpl: NFTListViewModel {
                                         sectionAuthor: selectedCollection.author,
                                         sectionDescription: selectedCollection.description,
                                         items: collectionNfts,
-                                        profile: profile)
+                                        profile: profile,
+                                        selectedNfts: selectedNfts)
             nftToShow.value = nftDetails
         }
     }
@@ -114,6 +116,21 @@ final class NFTListViewModelImpl: NFTListViewModel {
             case let .success(data):
                 state = .loaded(nftCollectionItems)
                 self?.profile = data
+                print(self?.profile?.likes)
+                group.leave()
+            case .failure:
+                state = .error
+                group.leave()
+            }
+        }
+
+        group.enter()
+        nftNetworkService.getOrders { [weak self] result in
+            switch result {
+            case let .success(data):
+                state = .loaded(nftCollectionItems)
+                self?.selectedNfts = data.nfts
+                print(self?.profile?.likes)
                 group.leave()
             case .failure:
                 state = .error

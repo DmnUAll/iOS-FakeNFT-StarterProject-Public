@@ -22,6 +22,7 @@ final class NFTDetailsViewModelImpl: NFTDetailsViewModel {
     let sectionAuthor: String
     let sectionDescription: String
     private var profile: ProfileModel
+    private var selectedNfts: [String]
 
     private let nftStorageService: NFtStorageService
     private let nftNetworkService: NFTNetworkService
@@ -34,18 +35,43 @@ final class NFTDetailsViewModelImpl: NFTDetailsViewModel {
         sectionAuthor = details.sectionAuthor
         sectionDescription = details.sectionDescription
         profile = details.profile
+        selectedNfts = details.selectedNfts
 
         nfts = .init(details.items.map { NFT($0) })
 
-        nfts.value.forEach { nft in
-            if let index = details.profile.likes.firstIndex(where: { nft.id == $0}) {
+        let favouriteIds = Set(nfts.value.map { $0.id }).intersection(Set(details.profile.likes))
+
+        nfts.value.enumerated().forEach { index, nft in
+            if favouriteIds.contains(nft.id) {
                 nfts.value[index].isFavourite = true
+            }
+        }
+
+        nfts.value.enumerated().forEach { index, nft in
+            if details.selectedNfts.contains(nft.id) {
+                nfts.value[index].isSelected = true
             }
         }
     }
 
     func selectedNft(index: Int) {
         nfts.value[index].isSelected.toggle()
+
+        if nfts.value[index].isSelected {
+            selectedNfts.append(nfts.value[index].id)
+        } else {
+            selectedNfts.removeAll { nfts.value[index].id == $0}
+        }
+
+        nftNetworkService.putOrder(nfts: selectedNfts) { result in
+            switch result {
+            case let .success(data):
+                print(data)
+                print(data.nfts)
+            case let .failure(error):
+                print(error)
+            }
+        }
 
         nfts.value[index].isSelected
         ? nftStorageService.selectNft(nfts.value[index])
@@ -56,28 +82,19 @@ final class NFTDetailsViewModelImpl: NFTDetailsViewModel {
     func selectFavourite(index: Int) {
         nfts.value[index].isFavourite.toggle()
 
-        if nfts.value[index].isSelected {
+        if nfts.value[index].isFavourite {
             profile.likes.append(nfts.value[index].id)
         } else {
             profile.likes.removeAll { nfts.value[index].id == $0}
         }
 
-        let params: [String: Any] = [
-            "name": profile.name,
-            "description": profile.description,
-            "website": profile.website,
-            "likes": [profile.likes]
-        ]
-
-        print("liked", profile.likes)
-
-        nftNetworkService.putLikedNft(params: params) { result in
+        nftNetworkService.putLikedNft(profile: profile) { result in
             switch result {
             case let .success(data):
-                print("jopa", data)
+                print(data)
                 print(data.likes)
             case let .failure(error):
-                print("jopa", error)
+                print(error)
             }
         }
 
@@ -86,4 +103,3 @@ final class NFTDetailsViewModelImpl: NFTDetailsViewModel {
         : nftStorageService.removeFromFavourite(nfts.value[index])
     }
 }
-

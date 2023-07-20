@@ -38,7 +38,6 @@ final class NFTListViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .appWhite
         configureNavigationController()
-        viewModel.viewDidLoad()
         viewModel.state.bind { [weak self] state in
             switch state {
             case .loading:
@@ -73,6 +72,7 @@ final class NFTListViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setupAppearance()
+        viewModel.reload()
     }
 
     private func setupAppearance() {

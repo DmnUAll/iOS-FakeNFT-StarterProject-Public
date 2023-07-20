@@ -24,10 +24,19 @@ final class NFTNetworkServiceImpl: NFTNetworkService {
         networkClient.send(request: ProfileRequest(httpMethod: .get), type: ProfileModel.self, onResponse: result)
     }
 
-    func putLikedNft(params: [String: Any], result: @escaping (Result<ProfileModel, Error>) -> Void) {
-        networkClient.upload(request: ProfileRequest(httpMethod: .put),
-                             type: ProfileModel.self,
-                             params: params,
-                             onResponse: result)
+    func putLikedNft(profile: ProfileModel, result: @escaping (Result<ProfileModel, Error>) -> Void) {
+        networkClient.send(request: ProfileRequest(httpMethod: .put, dto: profile),
+                           type: ProfileModel.self,
+                           onResponse: result)
+    }
+
+    func getOrders(result: @escaping (Result<OrderAPI, Error>) -> Void) {
+        networkClient.send(request: OrderRequest(httpMethod: .get), type: OrderAPI.self, onResponse: result)
+    }
+
+    func putOrder(nfts: [String], result: @escaping (Result<OrderAPI, Error>) -> Void) {
+        networkClient.send(request: OrderRequest(httpMethod: .put, dto: ["nfts": nfts]),
+                           type: OrderAPI.self,
+                           onResponse: result)
     }
 }
