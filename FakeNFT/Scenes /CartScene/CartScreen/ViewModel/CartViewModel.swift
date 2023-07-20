@@ -26,4 +26,10 @@ final class CartViewModel: CartViewModelProtocol {
         })
     }
     
+    func cartNFTs(completion: @escaping ([String]) -> Void) {
+        model?.cartNFTs(completion: { orders in
+            completion(orders.nfts)
+        })
+    }
+    
 }

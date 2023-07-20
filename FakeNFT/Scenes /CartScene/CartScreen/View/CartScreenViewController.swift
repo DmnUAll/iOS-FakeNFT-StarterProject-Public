@@ -197,18 +197,22 @@ extension CartScreenViewController {
         buttonStack.addArrangedSubview(cancelButton)
         cartTable.dataSource = self
         cartTable.delegate = self
-        getData(ids: ["1", "2", "3", "4"])
+        getData()
     }
     
-    private func getData(ids: [String]) {
-        ids.forEach { id in
-            viewModel?.getNFTs(nftID: id, completion: { cart in
-                self.cartArray.append(cart)
-                DispatchQueue.main.async {
-                    self.cartTable.reloadData()
-                }
-            })
-        }
+    private func getData() {
+        var myOrders = [String]()
+        viewModel?.model?.cartNFTs(completion: { orders in
+            myOrders = orders.nfts
+            myOrders.forEach { i in
+                self.viewModel?.getNFTs(nftID: i, completion: { cart in
+                    self.cartArray.append(cart)
+                    DispatchQueue.main.async {
+                        self.cartTable.reloadData()
+                    }
+                })
+            }
+        })
     }
     
     private func fillPictureToDelete(urlStr: String) {
