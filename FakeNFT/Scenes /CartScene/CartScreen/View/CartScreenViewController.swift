@@ -26,6 +26,8 @@ final class CartScreenViewController: UIViewController {
     
     var indexNFTToDelete: Int?
     
+    var myOrders = [String]()
+    
     private var window: UIWindow? {
         return UIApplication.shared.windows.first
     }
@@ -197,18 +199,23 @@ extension CartScreenViewController {
         buttonStack.addArrangedSubview(cancelButton)
         cartTable.dataSource = self
         cartTable.delegate = self
-        getData(ids: ["1", "2", "3", "4"])
+        getData()
     }
     
-    private func getData(ids: [String]) {
-        ids.forEach { id in
-            viewModel?.getNFTs(nftID: id, completion: { cart in
-                self.cartArray.append(cart)
-                DispatchQueue.main.async {
-                    self.cartTable.reloadData()
-                }
-            })
-        }
+    private func getData() {
+        myOrders = []
+        cartArray = []
+        viewModel?.model?.cartNFTs(completion: { orders in
+            self.myOrders = orders.nfts
+            self.myOrders.forEach { i in
+                self.viewModel?.getNFTs(nftID: i, completion: { cart in
+                    self.cartArray.append(cart)
+                    DispatchQueue.main.async {
+                        self.cartTable.reloadData()
+                    }
+                })
+            }
+        })
     }
     
     private func fillPictureToDelete(urlStr: String) {
@@ -268,7 +275,10 @@ extension CartScreenViewController {
     
     @objc
     func deleteNFT() {
-        print("DELETE \(indexNFTToDelete ?? 0) NFT")
+        myOrders.remove(at: indexNFTToDelete ?? 0)
+        viewModel?.changeCart(newArray: myOrders, completion: {
+            self.getData()
+        })
         blurView.removeFromSuperview()
         imageToDelete.removeFromSuperview()
         deleteText.removeFromSuperview()
@@ -277,7 +287,6 @@ extension CartScreenViewController {
     
     @objc
     func cancel() {
-        print("CANCEL")
         blurView.removeFromSuperview()
         imageToDelete.removeFromSuperview()
         deleteText.removeFromSuperview()

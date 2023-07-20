@@ -11,6 +11,7 @@ protocol CartViewModelProtocol {
     
     var model: CartModelProtocol? { get }
     func getNFTs(nftID: String, completion: @escaping (CartStruct) -> Void)
+    func changeCart(newArray: [String], completion: @escaping () -> Void)
     
 }
 
@@ -23,6 +24,18 @@ final class CartViewModel: CartViewModelProtocol {
     func getNFTs(nftID: String, completion: @escaping (CartStruct) -> Void) {
         model?.getNFT(nftID: nftID, completion: { cart in
             completion(cart)
+        })
+    }
+    
+    func cartNFTs(completion: @escaping ([String]) -> Void) {
+        model?.cartNFTs(completion: { orders in
+            completion(orders.nfts)
+        })
+    }
+    
+    func changeCart(newArray: [String], completion: @escaping () -> Void) {
+        model?.changeCart(newArray: newArray, completion: {
+            completion()
         })
     }
     
