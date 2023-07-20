@@ -26,6 +26,8 @@ final class CartScreenViewController: UIViewController {
     
     var indexNFTToDelete: Int?
     
+    var myOrders = [String]()
+    
     private var window: UIWindow? {
         return UIApplication.shared.windows.first
     }
@@ -201,10 +203,11 @@ extension CartScreenViewController {
     }
     
     private func getData() {
-        var myOrders = [String]()
+        myOrders = []
+        cartArray = []
         viewModel?.model?.cartNFTs(completion: { orders in
-            myOrders = orders.nfts
-            myOrders.forEach { i in
+            self.myOrders = orders.nfts
+            self.myOrders.forEach { i in
                 self.viewModel?.getNFTs(nftID: i, completion: { cart in
                     self.cartArray.append(cart)
                     DispatchQueue.main.async {
@@ -272,7 +275,10 @@ extension CartScreenViewController {
     
     @objc
     func deleteNFT() {
-        print("DELETE \(indexNFTToDelete ?? 0) NFT")
+        myOrders.remove(at: indexNFTToDelete ?? 0)
+        viewModel?.changeCart(newArray: myOrders, completion: {
+            self.getData()
+        })
         blurView.removeFromSuperview()
         imageToDelete.removeFromSuperview()
         deleteText.removeFromSuperview()
@@ -281,7 +287,6 @@ extension CartScreenViewController {
     
     @objc
     func cancel() {
-        print("CANCEL")
         blurView.removeFromSuperview()
         imageToDelete.removeFromSuperview()
         deleteText.removeFromSuperview()
