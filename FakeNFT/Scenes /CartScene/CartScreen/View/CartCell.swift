@@ -36,6 +36,8 @@ final class CartCell: UITableViewCell {
     
     var indexCell: Int?
     
+    var id: String?
+    
     let nftImage: UIImageView = {
         let image = UIImageView()
         image.layer.cornerRadius = 12

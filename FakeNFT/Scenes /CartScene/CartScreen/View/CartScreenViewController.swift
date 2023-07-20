@@ -24,7 +24,7 @@ final class CartScreenViewController: UIViewController {
     
     var cartArray: [CartStruct] = []
     
-    var indexNFTToDelete: Int?
+    var indexNFTToDelete: String?
     
     var myOrders = [String]()
     
@@ -156,6 +156,10 @@ final class CartScreenViewController: UIViewController {
         setupView()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        getData()
+    }
+    
 }
 
 // MARK: - Private methods
@@ -203,7 +207,6 @@ extension CartScreenViewController {
     }
     
     private func getData() {
-        myOrders = []
         cartArray = []
         viewModel?.model?.cartNFTs(completion: { orders in
             self.myOrders = orders.nfts
@@ -216,6 +219,29 @@ extension CartScreenViewController {
                 })
             }
         })
+        showOrHideTable()
+    }
+    
+    private func showOrHideTable() {
+        if cartArray.isEmpty {
+            DispatchQueue.main.async {
+                self.cartTable.isHidden = true
+                self.cartInfo.isHidden = true
+                self.cartTable.isHidden = true
+                self.countOfNFTS.isHidden = true
+                self.priceOfNFTS.isHidden = true
+                self.paymentButton.isHidden = true
+            }
+        } else {
+            DispatchQueue.main.async {
+                self.cartTable.isHidden = false
+                self.cartInfo.isHidden = false
+                self.cartTable.isHidden = false
+                self.countOfNFTS.isHidden = false
+                self.priceOfNFTS.isHidden = false
+                self.paymentButton.isHidden = false
+            }
+        }
     }
     
     private func fillPictureToDelete(urlStr: String) {
@@ -275,7 +301,11 @@ extension CartScreenViewController {
     
     @objc
     func deleteNFT() {
-        myOrders.remove(at: indexNFTToDelete ?? 0)
+        myOrders.forEach { number in
+            if number == indexNFTToDelete {
+                myOrders.removeAll(where: {$0 == number})
+            }
+        }
         viewModel?.changeCart(newArray: myOrders, completion: {
             self.getData()
         })
@@ -318,7 +348,7 @@ extension CartScreenViewController: CartCellDelegate {
         blurView.contentView.addSubview(buttonStack)
         let urlStr = cartArray[index].nftImages.first ?? ""
         fillPictureToDelete(urlStr: urlStr)
-        indexNFTToDelete = index
+        indexNFTToDelete = cartArray[index].id
         UIView.animate(withDuration: 0.3) {
             self.blurView.alpha = 1.0
             NSLayoutConstraint.activate([
@@ -377,6 +407,7 @@ extension CartScreenViewController: UITableViewDataSource {
         cell.nftImage.kf.setImage(with: imageURL)
         cell.indexCell = indexPath.row
         cell.delegate = self
+        cell.id = cartArray[indexPath.row].id
         return cell
     }
     
