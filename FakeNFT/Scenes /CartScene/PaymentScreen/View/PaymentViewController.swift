@@ -15,7 +15,7 @@ final class PaymentViewController: UIViewController {
     
     var paymentArray: [PaymentStruct] = []
     
-    var isCellSelected = false
+    var isCellSelected: Int = -1
     
     let paymentCollection: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -137,19 +137,24 @@ extension PaymentViewController {
     
     @objc
     func payButtonTapped() {
-        if isCellSelected {
-            let randomNum = Int.random(in: 1...3)
-            if randomNum == 1 {
-                let successVC = UnsuccessViewController()
-                successVC.modalPresentationStyle = .fullScreen
-                successVC.modalTransitionStyle = .crossDissolve
-                present(successVC, animated: false)
-            } else {
-                let successVC = SuccessViewController()
-                successVC.modalPresentationStyle = .fullScreen
-                successVC.modalTransitionStyle = .crossDissolve
-                present(successVC, animated: false)
-            }
+        if isCellSelected != -1 {
+            viewModel?.getPaymentResult(currencyID: String(isCellSelected), completion: { result in
+                if result == true {
+                    DispatchQueue.main.async {
+                        let successVC = SuccessViewController()
+                        successVC.modalPresentationStyle = .fullScreen
+                        successVC.modalTransitionStyle = .crossDissolve
+                        self.present(successVC, animated: false)
+                    }
+                } else {
+                    DispatchQueue.main.async {
+                        let successVC = UnsuccessViewController()
+                        successVC.modalPresentationStyle = .fullScreen
+                        successVC.modalTransitionStyle = .crossDissolve
+                        self.present(successVC, animated: false)
+                    }
+                }
+            })
         }
     }
     
@@ -188,7 +193,7 @@ extension PaymentViewController: UICollectionViewDataSource {
 extension PaymentViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        isCellSelected = true
+        isCellSelected = indexPath.row + 1
     }
     
 }
