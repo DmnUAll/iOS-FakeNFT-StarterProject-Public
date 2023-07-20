@@ -25,7 +25,7 @@ struct OrderRequest: NetworkRequest {
     var httpMethod: HttpMethod
     var dto: Encodable?
     var endpoint: URL? {
-        URL(string: "https://64858e8ba795d24810b71189.mockapi.io/api/v1/orders/1")
+        URL(string: "https://648cbc0b8620b8bae7ed515f.mockapi.io/api/v1/orders/1")
     }
 }
 
