@@ -157,6 +157,7 @@ final class CartScreenViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         getData()
     }
     
@@ -173,7 +174,7 @@ extension CartScreenViewController {
             cartTable.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             cartTable.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             cartTable.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            cartTable.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            cartTable.bottomAnchor.constraint(equalTo: cartInfo.topAnchor),
             cartInfo.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             cartInfo.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             cartInfo.trailingAnchor.constraint(equalTo: view.trailingAnchor),
